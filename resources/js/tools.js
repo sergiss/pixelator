@@ -1,9 +1,11 @@
 const canvas = document.querySelector('#panel');
 const ctx = canvas.getContext('2d');
 
-var size = 10;
+var pixelSize = 10;
 
-var isMouseDown = false;
+var eraserColor  = '#0F0';
+var currentColor = '#000';
+var isMouseDown  = false;
 
 const mousePosition = {
     x: 0,
@@ -15,18 +17,35 @@ const mouseStart = {
     y: 0
 }
 
-const mouseMove = (e)=> {
-    mousePosition.x = e.clientX - canvas.offsetLeft;
-    mousePosition.y = e.clientY - canvas.offsetTop;
+const draw = () => {
 
     if(isMouseDown) {
 
-        ctx.beginPath();
-        ctx.fillStyle = '#000';
-        ctx.fillRect(mousePosition.x, mousePosition.y, size, size);
-        ctx.closePath();
+        const x = Math.floor(mousePosition.x / pixelSize) * pixelSize;
+        const y = Math.floor(mousePosition.y / pixelSize) * pixelSize;
 
+        ctx.beginPath();
+
+        switch(toolSelection) {
+            case 'eraser' :
+                ctx.fillStyle = eraserColor;
+                ctx.fillRect(x, y, pixelSize, pixelSize);
+                break;
+            case 'pencil' :
+                ctx.fillStyle = currentColor;
+                ctx.fillRect(x, y, pixelSize, pixelSize);
+            break;
+    
+        }
+        ctx.closePath();
     }
+    
+}
+
+const mouseMove = (e)=> {
+    mousePosition.x = e.clientX - canvas.offsetLeft;
+    mousePosition.y = e.clientY - canvas.offsetTop;
+    draw();
 }
 
 const mouseDown = (e)=> {
@@ -40,9 +59,6 @@ const mouseUp = (e) => {
 }
 
 canvas.addEventListener("mousemove", mouseMove, false);
-
 canvas.addEventListener("mousedown", mouseDown, false);
-
 canvas.addEventListener("mouseup", mouseUp, false);
-
 canvas.addEventListener("mouseout", mouseUp, false); // TODO
