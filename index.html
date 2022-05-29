@@ -20,13 +20,30 @@
 
         <div class="col">
 
-            <div class="tools">
+            <div id="tools">
                 <button type="button" id="pencil" class="btn">
                     <i class="mdi mdi-pencil-outline"></i>
                 </button>
-                
+                <button type="button" id="eraser" class="btn">
+                    <i class="mdi mdi-eraser"></i>
+                </button>
                 <button type="button" id="bucket" class="btn">
                     <i class="mdi mdi-bucket-outline"></i>
+                </button>
+                <button type="button" id="line" class="btn">
+                    <i class="mdi mdi-vector-line"></i>
+                </button>
+                <button type="button" id="rect" class="btn">
+                    <i class="mdi mdi-rectangle-outline"></i>
+                </button>
+                <button type="button" id="rect-fill" class="btn">
+                    <i class="mdi mdi-rectangle"></i>
+                </button>
+                <button type="button" id="circle" class="btn">
+                    <i class="mdi mdi-checkbox-blank-circle-outline"></i>
+                </button>
+                <button type="button" id="circle-fill" class="btn">
+                    <i class="mdi mdi-checkbox-blank-circle"></i>
                 </button>
             </div>
             
@@ -35,7 +52,7 @@
         <div class="col">
 
             <div class="canvas">
-                <canvas></canvas>
+                <canvas id="panel"></canvas>
             </div>
 
         </div>
@@ -46,6 +63,7 @@
 
     </main>
     
-    <script src="resources/js/app.js"></script>
+    <script src="resources/js/tools.js"></script>
+    <script src="resources/js/script.js"></script>
 </body>
 </html>

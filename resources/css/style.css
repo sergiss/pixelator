@@ -8,6 +8,10 @@
     --btn-color-hover: #fff;
     --btn-background-hover: #777;
     --btn-border-hover: #777;
+
+    --btn-color-selected: #2f2f2f;
+    --btn-background-selected: #dcdcdc;
+    --btn-border-selected: rgb(176, 176, 176);
 }
 
 html, body {
@@ -29,7 +33,7 @@ body {
     flex: 1;
 }
 
-.tools {
+#tools {
     margin: 10px;
     width: 125px;
     display: grid;
@@ -56,7 +60,17 @@ body {
     border: 1px solid var(--btn-border-hover);
 }
 
+.btn.selected {
+    color: var(--btn-color-selected);
+    background: var(--btn-background-selected);
+    border: 1px solid var(--btn-border-selected);
+}
+
 .canvas {
     width : 100%;
     height: 100%;
+}
+
+#panel {
+    background: red;
 }
