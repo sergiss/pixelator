@@ -8,7 +8,7 @@ export class Editor {
 
         this.app = app;
 
-        this.pixelSize = 16;
+        this.pixelSize = 20;
 
         this.currentColor = '#000';
         this.isMouseDown  = false;
