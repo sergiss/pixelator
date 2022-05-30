@@ -207,3 +207,16 @@ canvas {
     padding: 10px 0;
     width: 100px;
 }
+
+a {
+    margin: 10px;
+    font-size: 1.5rem;
+  }
+  
+  a:link {
+    text-decoration: none;
+  }
+  
+  a:visited {
+    text-decoration: none;
+  }
