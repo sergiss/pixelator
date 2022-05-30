@@ -5,7 +5,7 @@ export class Tools {
         this.app = app;
 
         // Tool buttons
-        this.toolButtons = document.querySelectorAll('#tools > .btn');
+        this.toolButtons = document.querySelectorAll('#tools > button');
 
         // Toggle button selection state
         this.setToolSelection = (id) => {
@@ -23,7 +23,7 @@ export class Tools {
             });
         });
 
-        this.setToolSelection('rect');
+        this.setToolSelection('pencil');
 
     }
 

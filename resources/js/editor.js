@@ -1,14 +1,16 @@
+const SIZE = 550;
+
 import { Vec2 } from "./vec2.js";
 
 export class Editor {
 
-    constructor(app) {
+    constructor(app, size = {x: 16, y: 16}) {
 
         this.app = app;
 
-        this.pixelSize = 10;
+        this.pixelSize = 16;
 
-        this.currentColor = '#F00';
+        this.currentColor = '#000';
         this.isMouseDown  = false;
 
         this.mousePosition = new Vec2();
@@ -25,12 +27,13 @@ export class Editor {
                 result = {}
             }
             const rect = canvas1.getBoundingClientRect();
-            result.x = e.clientX - rect.left;
-            result.y = e.clientY - rect.top;
+            result.x = (e.clientX || e.touches[0].pageX) - rect.left;
+            result.y = (e.clientY || e.touches[0].pageY) - rect.top;
             return result;
         }
 
         const mouseMove = (e)=> {
+            e.preventDefault();
             getMousePosition(e, this.mousePosition);
             this.draw();
         }
@@ -44,19 +47,21 @@ export class Editor {
             this.isMouseDown = false;
             if(this.app.toolSelection === 'line'
             || this.app.toolSelection === 'rect'
-            || this.app.toolSelection === 'rect-fill') {
+            || this.app.toolSelection === 'rect-fill'
+            || this.app.toolSelection === 'circle'
+            || this.app.toolSelection === 'circle-fill') {
                 this.ctx1.drawImage(canvas2, 0, 0);
             }
         }
-
-        const mouseOut = ()=> {
-            
-        }
         
         canvas2.addEventListener("mousemove", mouseMove, false);
+        canvas2.addEventListener("touchmove", mouseMove, false);
         canvas2.addEventListener("mousedown", mouseDown, false);
+        canvas2.addEventListener("pointerdown", mouseDown, false);
+
         // canvas2.addEventListener("mouseout" , mouseOut , false);
 
+        canvas2.addEventListener("pointerup", mouseDown, false);
         document.body.addEventListener("mouseup", mouseUp, false);
         document.body.addEventListener("mouseout", (e)=> {
             if(e.target === document.body) {
@@ -66,13 +71,17 @@ export class Editor {
 
         this.canvas1 = canvas1;
         this.ctx1 = ctx1;
-        this.canvas1.width  = 550;
-        this.canvas1.height = 550;
 
         this.canvas2 = canvas2;
         this.ctx2 = ctx2;
-        this.canvas2.width  = 550;
-        this.canvas2.height = 550;
+
+        this.canvas1.width  = this.canvas2.width  = size.x * this.pixelSize;
+        this.canvas1.height = this.canvas2.height = size.y * this.pixelSize;
+
+        // Color picker
+        document.querySelector('#color-picker').addEventListener('input', (e)=> {
+            this.currentColor = e.target.value;
+        });
 
     }
 
@@ -92,24 +101,52 @@ export class Editor {
                 case 'pencil' :
                     this.ctx1.fillStyle = this.currentColor;
                     this.ctx1.fillRect(x, y, this.pixelSize, this.pixelSize);
-                break;
+                    break;
                 case 'bucket' :
                     floodFill(this.canvas1, this.mousePosition, this.currentColor);
-                break;
+                    break;
                 case 'line' :
                     drawLine(this.canvas2, this.mouseStart, this.mousePosition, this.pixelSize, this.currentColor);
-                break;
+                    break;
                 case 'rect' :
                     drawRect(this.canvas2, this.mouseStart, this.mousePosition, this.pixelSize, this.currentColor);
-                break;
+                    break;
                 case 'rect-fill' :
                     drawRect(this.canvas2, this.mouseStart, this.mousePosition, this.pixelSize, this.currentColor, true);
-                break;
+                    break;
+                case 'circle' :
+                    drawCircle(this.canvas2, this.mouseStart, this.mousePosition, this.pixelSize, this.currentColor);
+                    break;
+                case 'circle-fill' :
+                    drawCircle(this.canvas2, this.mouseStart, this.mousePosition, this.pixelSize, this.currentColor, true);
+                    break;
+                case 'dropper' :
+                    const color = getColorAt(this.canvas1, this.mousePosition);
+                    if(color.toLowerCase().endsWith('ff')) {
+                        this.currentColor = color.substring(0, 7);
+                        document.querySelector('#color-picker').value = this.currentColor;
+                    }
+                    break;
             }
             
         }
 
     }
+
+}
+
+const getColorAt = (canvas, position)=> {
+    const { width: w, height: h } = canvas;
+
+    const ctx = canvas.getContext('2d');
+    const imageData = ctx.getImageData(0, 0, w, h);
+    const data = imageData.data;
+
+    let x = position.x << 0;
+    let y = position.y << 0;
+
+    let index = (w * y + x) * 4;
+    return '#' + data[index].toString(16).padStart(2, '0') + data[index + 1].toString(16).padStart(2, '0') + data[index + 2].toString(16).padStart(2, '0') + data[index + 3].toString(16).padStart(2, '0') ;
 
 }
 
@@ -266,6 +303,52 @@ const drawRect = (canvas, start, end, pixelSize, color, fill) => {
 
 }
 
-const drawCircle = ()=> {
+const drawCircle = (canvas, start, end, pixelSize, color, fill) => {
+
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = color;
+
+    const p0 = new Vec2(start).div(pixelSize).floor();
+    const p1 = new Vec2(end  ).div(pixelSize).floor();
+
+    const dst = Math.floor(p0.dst(p1));
+
+    const tmp = new Vec2();
+
+    let x0 = Math.max(0, p0.x - dst), 
+        x1 = Math.min(Math.floor(canvas.width  / pixelSize), p0.x + dst + 1), 
+        y0 = Math.max(0, p0.y - dst), 
+        y1 = Math.min(Math.floor(canvas.height / pixelSize), p0.y + dst + 1);
+
+    if(fill) {
+
+        for(let x = x0; x < x1; ++x) {
+            for(let y = y0; y < y1; ++y) {
+                if(tmp.set(x, y).sub(p0.x, p0.y).len() < dst) {
+                    let wx = x * pixelSize;
+                    let wy = y * pixelSize;
+                    ctx.fillRect(wx, wy, pixelSize, pixelSize);
+                }
+            }
+        }
+
+    } else {
+
+        for(let x = x0; x < x1; ++x) {
+            for(let y = y0; y < y1; ++y) {
+                if(tmp.set(x, y).sub(p0.x, p0.y).len() < dst
+                && (tmp.set(x + 1, y).sub(p0.x, p0.y).len() >= dst
+                || tmp.set(x - 1, y).sub(p0.x, p0.y).len() >= dst
+                || tmp.set(x    , y + 1).sub(p0.x, p0.y).len() >= dst
+                || tmp.set(x    , y - 1).sub(p0.x, p0.y).len() >= dst)) {
+                    let wx = x * pixelSize;
+                    let wy = y * pixelSize;
+                    ctx.fillRect(wx, wy, pixelSize, pixelSize);
+                }
+            }
+        }
+
+    }
+
 
 }

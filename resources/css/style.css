@@ -11,7 +11,10 @@
 
     --btn-color-selected: #2f2f2f;
     --btn-background-selected: #dcdcdc;
-    --btn-border-selected: rgb(176, 176, 176);
+    --btn-border-selected: #b0b0b0;
+
+    --panel-container: gray;
+    --panel-wrapper: white;
 }
 
 html, body {
@@ -38,8 +41,11 @@ body {
     flex: 1;
 }
 
+main {
+    padding: 10px;
+}
+
 #tools {
-    margin-left: 5px;
     width: 125px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -71,8 +77,13 @@ body {
     border: 1px solid var(--btn-border-selected);
 }
 
+.color-picker {
+    width : 58px;
+    height: 62px;
+}
+
 .panel-container {
-    background: gray;
+    background: var(--panel-container);
     border-radius: 5px;
     overflow: scroll;
     display: flex;
@@ -82,16 +93,12 @@ body {
 
 .panel-wrapper {
     position: relative;
-    width: 550px;
-    height: 550px;
     overflow: hidden;
-    background: white;
+    background: var(--panel-wrapper);
     border-radius: 5px;
 }
 
-.panel {
-    width: 100%;
-    height: 100%;
+#panel2 {
     top: 0;
     left: 0;
     position: absolute;

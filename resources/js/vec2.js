@@ -172,6 +172,12 @@ export class Vec2 {
         return this;
     }
 
+    abs() {
+        this.x = Math.abs(this.x);
+        this.y = Math.abs(this.y);
+        return this;
+    }
+
     copy() {
         return new Vec2(this.x, this.y);
     }
