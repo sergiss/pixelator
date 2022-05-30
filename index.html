@@ -18,7 +18,7 @@
 
     <main class="row">
 
-        <div class="col">
+        <div class="col-0">
 
             <div id="tools">
                 <button type="button" id="pencil" class="btn">
@@ -49,21 +49,23 @@
             
         </div>
 
-        <div class="col">
+        <div class="col-1">
 
-            <div class="canvas">
-                <canvas id="panel"></canvas>
+            <div class="panel-container">
+                <div class="panel-wrapper">
+                    <canvas class="panel" id='panel1'></canvas>
+                    <canvas class="panel" id='panel2'></canvas>
+                </div>
             </div>
 
         </div>
 
-        <div class="col">
-            
+        <div class="col-0">
+
         </div>
 
     </main>
     
-    <script src="resources/js/tools.js"></script>
-    <script src="resources/js/script.js"></script>
+    <script src="resources/js/script.js" type="module"></script>
 </body>
 </html>

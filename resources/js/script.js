@@ -1,24 +1,19 @@
-var toolSelection = null;
+import { Editor } from "./editor.js";
+import { Tools } from "./tools.js";
 
-// Tool buttons
-const toolButtons = document.querySelectorAll('#tools > .btn');
 
-// Initialize tool buttons
-toolButtons.forEach(button => {
-    button.setSelected = (b) => {
-        button.classList[b ? 'add' : 'remove']('selected');
+class App {
+
+    constructor() {
+
+        this.toolSelection = null;
+
+        this.tools  = new Tools(this);
+        this.editor = new Editor(this);
+
     }
-    button.addEventListener('click', (e) => {
-        setToolSelection(button.id);
-    });
-});
 
-
-// Toggle button selection state
-const setToolSelection = (id) => {
-    toolButtons.forEach(button => button.setSelected(button.id === id));
-    toolSelection = id;
 }
 
-// Set initial tool selection
-setToolSelection('pencil');
+const app = new App();
+

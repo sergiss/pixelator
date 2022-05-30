@@ -27,14 +27,19 @@ body {
     width: 100%;
     display: flex;
     flex-direction: row;
+    gap: 5px;
 }
 
-.col {
+.col-0 {
+    flex: 0;
+}
+
+.col-1 {
     flex: 1;
 }
 
 #tools {
-    margin: 10px;
+    margin-left: 5px;
     width: 125px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -66,11 +71,28 @@ body {
     border: 1px solid var(--btn-border-selected);
 }
 
-.canvas {
-    width : 100%;
-    height: 100%;
+.panel-container {
+    background: gray;
+    border-radius: 5px;
+    overflow: scroll;
+    display: flex;
+    justify-content: space-around;
+    padding: 20px 0;
 }
 
-#panel {
-    background: red;
+.panel-wrapper {
+    position: relative;
+    width: 550px;
+    height: 550px;
+    overflow: hidden;
+    background: white;
+    border-radius: 5px;
+}
+
+.panel {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
 }
