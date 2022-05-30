@@ -17,16 +17,27 @@
     --panel-wrapper: white;
 }
 
+* {
+    font-family: monospace, 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 html, body {
     height: 100%;
 }
 
 body {
-    margin: 5px;
     background: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    margin: 10px;
 }
 
 .row {
+    max-width: 800px;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -63,9 +74,9 @@ body {
     }
 
     #tools {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
     }
-    
+
 }
 
 .btn {
@@ -94,7 +105,7 @@ body {
 }
 
 .color-picker {
-    width : 58px;
+    width: 58px;
     height: 62px;
 }
 
@@ -104,7 +115,7 @@ body {
     overflow: scroll;
     display: flex;
     justify-content: space-around;
-    padding: 20px 0;
+    height: 100%;
 }
 
 .panel-wrapper {
@@ -112,6 +123,7 @@ body {
     overflow: hidden;
     background: var(--panel-wrapper);
     border-radius: 5px;
+    margin: 20px;
 }
 
 #panel2 {
@@ -124,4 +136,74 @@ canvas {
     margin: 0;
     padding: 0;
     margin-bottom: -4px;
+}
+
+.modal {
+
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: calc(25vh - 75px);
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: #808080bd;
+
+}
+
+.modal-content {
+
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    width: 300px;
+    border-radius: 10px;
+
+}
+
+.modal-header {
+
+    text-transform: uppercase;
+    font-size: 1.4rem;
+
+}
+
+.dimensions-row {
+    display: flex;
+    flex-direction: row;
+    font-size: 2rem;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+
+.dimensions {
+    width: 75px;
+    font-size: 2rem;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.modal-footer {
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px solid lightgray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-footer button {
+    font-size: 1.25rem;
+    margin-top: 10px;
+    padding: 10px 0;
+    width: 100px;
 }

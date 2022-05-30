@@ -10,11 +10,11 @@
 </head>
 <body>
 
-    <head>
+    <header>
 
-        <h1 class="title">Pixelator</h1>
+        <img src="resources/images/pixelator.png" alt="">
 
-    </head>
+    </header>
 
     <main class="row">
 
@@ -51,6 +51,14 @@
                 <button type="button" id="dropper" class="btn">
                     <i class="mdi mdi-eyedropper"></i>
                 </button>
+
+                <div type="button" id="download" class="btn">
+                    <i class="mdi mdi-floppy"></i>
+                </div>
+                <div type="button" id="new" class="btn">
+                    <i class="mdi mdi-file-document-outline"></i>
+                </div>
+
             </div>
             
         </div>
@@ -67,6 +75,24 @@
         </div>
 
     </main>
+
+    <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>New Project</h2>
+      </div>
+      <div class="dimensions-row">
+            <input type="number" id="width" min="1" class="dimensions" value="16" placeholder="Width">
+            X
+            <input type="number" id="height" min="1" class="dimensions" value="16" placeholder="height">
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="close">Cancel</button>
+        <button type="button" id="new-project">New</button>
+      </div>
+    </div>
+  
+  </div>
     
     <script src="resources/js/script.js" type="module"></script>
 </body>

@@ -4,7 +4,7 @@ import { Vec2 } from "./vec2.js";
 
 export class Editor {
 
-    constructor(app, size = {x: 16, y: 16}) {
+    constructor(app) {
 
         this.app = app;
 
@@ -27,8 +27,8 @@ export class Editor {
                 result = {}
             }
             const rect = canvas1.getBoundingClientRect();
-            result.x = (e.clientX || e.touches[0].pageX) - rect.left;
-            result.y = (e.clientY || e.touches[0].pageY) - rect.top;
+            result.x = (e.clientX || e.touches[0].clientX) - rect.left;
+            result.y = (e.clientY || e.touches[0].clientY) - rect.top;
             return result;
         }
 
@@ -75,14 +75,24 @@ export class Editor {
         this.canvas2 = canvas2;
         this.ctx2 = ctx2;
 
-        this.canvas1.width  = this.canvas2.width  = size.x * this.pixelSize;
-        this.canvas1.height = this.canvas2.height = size.y * this.pixelSize;
-
         // Color picker
         document.querySelector('#color-picker').addEventListener('input', (e)=> {
             this.currentColor = e.target.value;
         });
 
+    }
+
+    initialize = (w, h) => {
+        this.canvas1.width  = this.canvas2.width  = w * this.pixelSize;
+        this.canvas1.height = this.canvas2.height = h * this.pixelSize;
+    }
+
+    download = ()=> {
+        const img = this.canvas1.toDataURL('image/png')
+        var link = document.createElement('a');
+        link.download = 'image.png';
+        link.href = img;
+        link.click();
     }
 
     draw = ()=> {
