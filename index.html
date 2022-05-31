@@ -55,8 +55,14 @@
                 <div type="button" id="download" class="btn">
                     <i class="mdi mdi-floppy"></i>
                 </div>
-                <div type="button" id="new" class="btn">
+
+                <div class="dropdown btn" id="dropbtn">
                     <i class="mdi mdi-file-document-outline"></i>
+                    <div class="dropdown-content" id="a">
+                      <a id="new">New</a>
+                      <a id="open">Open</a>
+                    </div>
+
                 </div>
 
             </div>
@@ -85,9 +91,9 @@
         <h2>New Project</h2>
       </div>
       <div class="dimensions-row">
-            <input type="number" id="width" min="1" class="dimensions" value="16" placeholder="Width">
+            <input type="number" id="width" min="1" class="dimensions" value="16" placeholder="W">
             X
-            <input type="number" id="height" min="1" class="dimensions" value="16" placeholder="height">
+            <input type="number" id="height" min="1" class="dimensions" value="16" placeholder="H">
       </div>
       <div class="modal-footer">
         <button type="button" id="close">Cancel</button>

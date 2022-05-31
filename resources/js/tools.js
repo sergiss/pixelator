@@ -56,4 +56,8 @@ export class Tools {
 
     }
 
+    openImage = ()=> {
+        
+    }
+
 }

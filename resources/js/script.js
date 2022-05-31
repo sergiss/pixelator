@@ -41,11 +41,25 @@ class App {
         this.editor = new Editor(this);
         this.editor.initialize(16, 16);
 
+        // New Project
+        const dropbtn = document.getElementById('dropbtn');
+        dropbtn.addEventListener('click', (e)=> {
+            document.getElementById("a").classList.add("show");
+        });
+
+        // Open file
+        document.getElementById('open').addEventListener('click', (e)=> {
+            this.editor.openImage();
+            document.getElementById("a").classList.remove("show");
+        });
+
         // Modal
-        var modal = document.getElementById("modal");
-        document.getElementById("new").onclick = function() {
+        const modal = document.getElementById("modal");
+        document.getElementById("new").addEventListener('click', ()=> {
             modal.style.display = "block";
-        }
+            document.getElementById("a").classList.remove("show");
+        });
+
         document.getElementById("new-project").onclick = () => {
            this.editor.initialize(
                document.getElementById('width' ).value,
@@ -53,18 +67,23 @@ class App {
            );
            modal.style.display = "none";
         }
+
         document.getElementById("close").addEventListener('click', ()=> {
             modal.style.display = "none";
         });
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
 
         // Save
         document.getElementById("download").onclick = () => {
            this.editor.download();
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            } else if(event.target != dropbtn 
+            && event.target != dropbtn.firstElementChild) {
+                document.getElementById("a").classList.remove("show");
+            }
         }
 
     }

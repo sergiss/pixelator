@@ -27,9 +27,7 @@ html, body {
 
 body {
     background: var(--background-color);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: center;
 }
 
 header {
@@ -37,11 +35,15 @@ header {
 }
 
 .row {
+    margin-left: auto;
+    margin-right: auto;
     max-width: 800px;
     width: 100%;
     display: flex;
     flex-direction: row;
     gap: 5px;
+
+    overflow: hidden;
 }
 
 .col-0 {
@@ -59,24 +61,6 @@ header {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 5px;
-}
-
-@media (max-width: 600px) {
-
-    .row {
-        flex-direction: column;
-    }
-
-    .col-0 {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #tools {
-        grid-template-columns: repeat(6, 1fr);
-    }
-
 }
 
 .btn {
@@ -112,18 +96,18 @@ header {
 .panel-container {
     background: var(--panel-container);
     border-radius: 5px;
-    overflow: scroll;
-    display: flex;
-    justify-content: space-around;
     height: 100%;
+    max-width: 680px;
+    max-height: 680px;
+    overflow: auto;
 }
 
 .panel-wrapper {
+    margin: 20px;
+    display: inline-block;
     position: relative;
-    overflow: hidden;
     background: var(--panel-wrapper);
     border-radius: 5px;
-    margin: 20px;
 }
 
 #panel2 {
@@ -135,7 +119,6 @@ header {
 canvas {
     margin: 0;
     padding: 0;
-    margin-bottom: -4px;
 }
 
 .modal {
@@ -174,6 +157,10 @@ canvas {
 
 }
 
+.modal-header > h2 {
+    margin: 8px 0 0 0;
+}
+
 .dimensions-row {
     display: flex;
     flex-direction: row;
@@ -181,7 +168,7 @@ canvas {
     gap: 10px;
     align-items: center;
     justify-content: center;
-    margin: 10px;
+    margin: 20px;
 }
 
 .dimensions {
@@ -211,12 +198,74 @@ canvas {
 a {
     margin: 10px;
     font-size: 1.5rem;
-  }
-  
-  a:link {
+}
+
+a:link {
     text-decoration: none;
-  }
-  
-  a:visited {
+}
+
+a:visited {
     text-decoration: none;
-  }
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: #f1f1f1;
+    border-radius: 5px;
+    min-width: 150px;
+
+    box-shadow: 8px 8px 16px 0px #00000033;
+    z-index: 1;
+
+    left: 100%;
+    bottom: 0;
+    margin-left: 7px;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown a:hover {
+    background-color: #ddd;
+}
+
+.show {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 600px) {
+
+    .row {
+        flex-direction: column;
+    }
+
+    .col-0 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #tools {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .dropdown-content {
+        position: absolute;
+        margin-top: 7px;
+        left: auto;
+        bottom: auto;
+        top: 100%;
+        right: 0;
+    }
+
+}

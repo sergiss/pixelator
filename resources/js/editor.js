@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-const SIZE = 550;
+const PIXEL_SIZE = 20;
 
 import { Vec2 } from "./vec2.js";
 
@@ -38,7 +38,7 @@ export class Editor {
 
         this.app = app;
 
-        this.pixelSize = 20;
+        this.scale = 1;
 
         this.currentColor = '#000';
         this.isMouseDown  = false;
@@ -54,11 +54,12 @@ export class Editor {
 
         const getMousePosition = (e, result)=> {
             if(!result) {
-                result = {}
+                result = new Vec2();
             }
             const rect = canvas1.getBoundingClientRect();
             result.x = (e.clientX || e.touches[0].clientX) - rect.left;
             result.y = (e.clientY || e.touches[0].clientY) - rect.top;
+            result.scl(this.scale);
             return result;
         }
 
@@ -71,6 +72,8 @@ export class Editor {
         const mouseDown = (e)=> {
             this.isMouseDown = true;
             getMousePosition(e, this.mouseStart);
+            this.mousePosition.set(this.mouseStart);
+            this.draw();
         }
         
         const mouseUp = (e) => {
@@ -91,7 +94,7 @@ export class Editor {
 
         // canvas2.addEventListener("mouseout" , mouseOut , false);
 
-        canvas2.addEventListener("pointerup", mouseDown, false);
+        canvas2.addEventListener("pointerup", mouseUp, false);
         document.body.addEventListener("mouseup", mouseUp, false);
         document.body.addEventListener("mouseout", (e)=> {
             if(e.target === document.body) {
@@ -113,16 +116,47 @@ export class Editor {
     }
 
     initialize = (w, h) => {
-        this.canvas1.width  = this.canvas2.width  = w * this.pixelSize;
-        this.canvas1.height = this.canvas2.height = h * this.pixelSize;
+        this.canvas1.width  = this.canvas2.width  = w * PIXEL_SIZE;
+        this.canvas1.height = this.canvas2.height = h * PIXEL_SIZE;
+        const tgtSize = 680;
+        if(this.canvas1.width > tgtSize || this.canvas1.height > tgtSize) {
+            this.scale = 1;
+
+            this.ctx1.scale(this.scale, this.scale);
+            this.ctx2.scale(this.scale, this.scale);
+        }
     }
 
     download = ()=> {
-        const img = this.canvas1.toDataURL('image/png')
-        var link = document.createElement('a');
+        const link = document.createElement('a');
         link.download = 'image.png';
-        link.href = img;
+        link.href = scaleImage(this.canvas1, 1 / PIXEL_SIZE * this.scale).toDataURL('image/png');
         link.click();
+    }
+    
+    openImage = ()=> {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = ".jpg,.jpeg,.png";
+        input.addEventListener('change', (e)=> {
+            const reader = new FileReader();
+            reader.onload = ()=> {
+            const image = new Image();
+              image.src = reader.result;
+              image.addEventListener('load', ()=> {
+                this.initialize(image.width, image.height);
+                const tmp = scaleImage(image, PIXEL_SIZE);
+                this.ctx1.save();
+                this.ctx1.webkitImageSmoothingEnabled = false;
+                this.ctx1.mozImageSmoothingEnabled = false;
+                this.ctx1.imageSmoothingEnabled = false;
+                this.ctx1.drawImage(tmp, 0, 0);
+                this.ctx1.restore();
+              });
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        });
+        input.click();
     }
 
     draw = ()=> {
@@ -131,34 +165,34 @@ export class Editor {
 
         if(this.isMouseDown) {
 
-            const x = Math.floor(this.mousePosition.x / this.pixelSize) * this.pixelSize;
-            const y = Math.floor(this.mousePosition.y / this.pixelSize) * this.pixelSize;
+            const x = Math.floor(this.mousePosition.x / PIXEL_SIZE) * PIXEL_SIZE;
+            const y = Math.floor(this.mousePosition.y / PIXEL_SIZE) * PIXEL_SIZE;
     
             switch(this.app.toolSelection) {
                 case 'eraser' :
-                    this.ctx1.clearRect(x, y, this.pixelSize, this.pixelSize);
+                    this.ctx1.clearRect(x, y, PIXEL_SIZE, PIXEL_SIZE);
                     break;
                 case 'pencil' :
                     this.ctx1.fillStyle = this.currentColor;
-                    this.ctx1.fillRect(x, y, this.pixelSize, this.pixelSize);
+                    this.ctx1.fillRect(x, y, PIXEL_SIZE, PIXEL_SIZE);
                     break;
                 case 'bucket' :
                     floodFill(this.canvas1, this.mousePosition, this.currentColor);
                     break;
                 case 'line' :
-                    drawLine(this.canvas2, this.mouseStart, this.mousePosition, this.pixelSize, this.currentColor);
+                    drawLine(this.canvas2, this.mouseStart, this.mousePosition, PIXEL_SIZE, this.currentColor);
                     break;
                 case 'rect' :
-                    drawRect(this.canvas2, this.mouseStart, this.mousePosition, this.pixelSize, this.currentColor);
+                    drawRect(this.canvas2, this.mouseStart, this.mousePosition, PIXEL_SIZE, this.currentColor);
                     break;
                 case 'rect-fill' :
-                    drawRect(this.canvas2, this.mouseStart, this.mousePosition, this.pixelSize, this.currentColor, true);
+                    drawRect(this.canvas2, this.mouseStart, this.mousePosition, PIXEL_SIZE, this.currentColor, true);
                     break;
                 case 'circle' :
-                    drawCircle(this.canvas2, this.mouseStart, this.mousePosition, this.pixelSize, this.currentColor);
+                    drawCircle(this.canvas2, this.mouseStart, this.mousePosition, PIXEL_SIZE, this.currentColor);
                     break;
                 case 'circle-fill' :
-                    drawCircle(this.canvas2, this.mouseStart, this.mousePosition, this.pixelSize, this.currentColor, true);
+                    drawCircle(this.canvas2, this.mouseStart, this.mousePosition, PIXEL_SIZE, this.currentColor, true);
                     break;
                 case 'dropper' :
                     const color = getColorAt(this.canvas1, this.mousePosition);
@@ -175,6 +209,19 @@ export class Editor {
 
 }
 
+const scaleImage = (image, scale) => {
+    const canvas = document.createElement('canvas');
+    canvas.width  = image.width * scale;
+    canvas.height = image.height * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
+    ctx.scale(scale, scale);
+    ctx.drawImage(image, 0, 0);
+    return canvas;
+}
+
 const getColorAt = (canvas, position)=> {
     const { width: w, height: h } = canvas;
 
@@ -187,7 +234,6 @@ const getColorAt = (canvas, position)=> {
 
     let index = (w * y + x) * 4;
     return '#' + data[index].toString(16).padStart(2, '0') + data[index + 1].toString(16).padStart(2, '0') + data[index + 2].toString(16).padStart(2, '0') + data[index + 3].toString(16).padStart(2, '0') ;
-
 }
 
 const sameColors = (a, off1, b, off2 = 0) => {
